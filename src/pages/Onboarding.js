@@ -43,7 +43,7 @@ const Onboarding = () => {
           <h2>CREATE ACCOUNT</h2>
           <form onSubmit={handleSubmit}>
             <section>
-              <label htmlFor="first_name">FirstName</label>
+              <label htmlFor="first_name">First Name</label>
               <input
                 id="first_name"
                 type="text"
@@ -167,7 +167,7 @@ const Onboarding = () => {
                 value={formData.about}
                 onChange={handleChange}
               />
-              <input type="submit" value="submit" />
+              <input type="submit" value="Submit" />
             </section>
 
             <section>
