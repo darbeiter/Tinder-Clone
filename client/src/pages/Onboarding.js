@@ -1,10 +1,13 @@
 import { useState } from "react"
 import Nav from "../components/Nav"
+import { useCookies } from 'react-cookie'
+import axios from "axios"
+import { useNavigate } from "react-router-dom"
 
 const Onboarding = () => {
-
+    const [ cookies, setCookie, removeCookie] = useCookies(['user'])
     const [formData, setFormData] = useState({
-      user_id: "",
+      user_id: cookies.UserId,
       first_name: "",
       dob_day: "",
       dob_month: "",
@@ -17,9 +20,18 @@ const Onboarding = () => {
       matches: []
     })
 
-    const handleSubmit = () => {
-      console.log('submitted')
+    let navigate = useNavigate()
+
+    const handleSubmit = async (e) => {
+      e.preventDefault()
+      try {
+        const response = await axios.put('http://localhost:8000/user', { formData })
+        const success = response.status === 200
+        if(success) navigate('/dashboard')
+      } catch (err) {
+        console.log(err)
     }
+  }
 
     const handleChange = (e) => {
       console.log('e', e)
@@ -175,6 +187,7 @@ const Onboarding = () => {
                 {/* URL being used here, but we want to use an FileUpload function here */}
                 <div className="photo-container">
                   {/* IMG will be shown here */}
+                  {/* {formData.url && <img src={formData.url} alt="profile pic preview"}/> */}
                   <img src="" alt="" />
                 </div>
             </section>
@@ -183,5 +196,4 @@ const Onboarding = () => {
       </>
     )
   }
-  
   export default Onboarding
