@@ -23,7 +23,7 @@ const Dashboard = () => {
     }
   }
 
-  const getGenderedUser = async () => {
+  const getGenderedUsers = async () => {
     try {
       const response = await axios.get('http://localhost:8000/gendered-users', {
         params: { gender: user?.gender_interest}
@@ -36,8 +36,15 @@ const Dashboard = () => {
 
   useEffect(() => {
     getUser()
-    getGenderedUser()
+    getGenderedUsers()
   }, []) 
+
+  useEffect(() => {
+    if(user) {
+      getGenderedUsers()
+    }
+  }, [user])
+ 
 
 
   const updateMatches = async (matchedUserId) => {
@@ -64,7 +71,7 @@ const Dashboard = () => {
     console.log(name + ' left the screen!')
   }
 
-  const matchedUserIds = user?.matches.map(({ user_id}) => user_id).concat(userId)
+  const matchedUserIds = user?.matches.map(({ user_id }) => user_id).concat(userId)
 
   const filteredGeneredUsers = genderedUsers?.filter(
     genderedUser => !matchedUserIds.includes(genderedUser.user_id)
@@ -80,7 +87,7 @@ const Dashboard = () => {
             {filteredGeneredUsers?.map((genderedUser) =>
             <TinderCard 
             className='swipe' 
-            key={genderedUser.first_name} 
+            key={genderedUser.user_id} 
             onSwipe={(dir) => swiped(dir, genderedUser.user_id)} 
             onCardLeftScreen={() => outOfFrame(genderedUser.first_name)}>
               <div style={{ backgroundImage: 'url(' + genderedUser.url + ')' }} className='card'>
