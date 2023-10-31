@@ -6,7 +6,9 @@ const jwt = require('jsonwebtoken')
 const cors = require('cors')
 const bcrypt = require ('bcrypt')
 
-const uri = "mongodb://localhost:27017/";
+require('dotenv').config()
+
+const uri = process.env.URI
 
 
 const app = express()
