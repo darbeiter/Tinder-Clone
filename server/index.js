@@ -83,14 +83,63 @@ app.post('/login', async (req, res) => {
     }
 })
 
-app.get('/users', async(req, res) => {
+
+app.get('/user', async (req, res) => {
     const client = new MongoClient(uri)
+    const userId = req.query.userId
+    console.log('userId', userId)
+    try {
+        await client.connect()
+        const database = client.db('app-data')
+        const users = database.collection('users')
+
+        const query = { user_id: userId }
+        const user = await users.findOne(query)
+        res.send(user)
+    } finally {
+        await client.close()
+    }
+})
+
+
+app.get('/users', async (req, res) => {
+    const client = new MongoClient(uri)
+    const userIds = JSON.parse(req.query.userIds)
+
+    try {
+        await client.connect()
+        const database = client.db('app-data')
+        const users = database.collection('users')
+
+        const pipeline = 
+        [
+            {
+                '$match': {
+                    'user_id' : {'$in': userIds}
+                }
+            }
+        ]
+        const foundUsers = await users.aggregate(pipeline).toArray()
+        res.send(foundUsers)
+    } finally {
+        await client.close()
+    }
+})
+
+app.get('/gendered-users', async(req, res) => {
+    const client = new MongoClient(uri)
+    const gender = req.query.gender
+
+    console.log('gender', gender)
+
     try{
         await client.connect();
         const database = client.db('app-data')
         const users = database.collection('users')
-        const returnedUsers = await users.find().toArray()
-        res.send(returnedUsers)
+        const query = { gender_identity: { $eq: gender }}
+        const foundUsers = await users.find(query).toArray()
+
+        res.send(foundUsers)
     } finally {
         await client.close()
     }
@@ -127,3 +176,60 @@ app.put('/user', async(req, res) => {
     }
 })
 
+app.put('/addmatch', async (req, res) => {
+    const client = new MongoClient(uri)
+    const { userId, matchedUserId } = req.body
+
+    try {
+        await client.connect()
+        const database = client.db('app-data')
+        const users = database.collection('users')
+
+        const query = { user_id: userId }
+        const updateDocument = {
+            $push: { matches: { user_id: matchedUserId }}
+        }
+        const user = await users.updateOne(query, updateDocument)
+        res.send(user)
+    } finally {
+        await client.close()
+    }
+})
+
+
+app.get('/messages', async (req, res) => {
+    const client = new MongoClient(uri)
+    const { userId, correspondingUserId } = req.query
+    console.log(userId, correspondingUserId)
+
+    try {
+        await client.connect()
+        const database = client.db('app-data')
+        const messages = database.collection('messages')
+
+        const query = {
+            from_userId: userId, to_userId: correspondingUserId
+        }
+
+        const foundMessages = await messages.find(query).toArray()
+        res.send(foundMessages)
+    } finally {
+        await client.close()
+    }
+})
+
+
+app.post('/message', async (req, res) => {
+    const client = new MongoClient(uri)
+    const message = req.body.message
+
+    try {
+        await client.connect()
+        const database = client.db('app-data')
+        const messages = database.collection('messages')
+        const insertedMessage = await messages.insertOne(message)
+        res.send(insertedMessage)
+    } finally {
+        await client.close()
+    }
+})
