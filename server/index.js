@@ -5,6 +5,7 @@ const { v4: uuidv4 } = require('uuid')
 const jwt = require('jsonwebtoken')
 const cors = require('cors')
 const bcrypt = require ('bcrypt')
+const bodyParser = require('body-parser')
 
 require('dotenv').config()
 
@@ -14,7 +15,7 @@ const uri = process.env.URI
 const app = express()
 app.use(cors())
 app.use(express.json())
-
+app.use(bodyParser.json())
 
 app.listen(PORT, () => console.log('Server is running on PORT ' + PORT))
 
@@ -130,7 +131,7 @@ app.get('/users', async (req, res) => {
 
 app.get('/gendered-users', async(req, res) => {
     const client = new MongoClient(uri)
-    const gender = req.query.gender
+    const gender = req.query.gender_identity
 
     console.log('gender', gender)
 
@@ -146,6 +147,32 @@ app.get('/gendered-users', async(req, res) => {
         await client.close()
     }
 })
+
+
+//Funktioniert aber Bolean muss zum Array werden, damit die Bilder von den Matches angezeigt werden
+app.get('/check-matches/:user_id', async (req, res) => {
+    const client = new MongoClient(uri);
+  
+    try {
+      await client.connect();
+      const database = client.db('app-data');
+      const users = database.collection('users');
+      const user_id = req.params.user_id; // Get the user_id from the URL parameter
+        console.log('userid', user_id)
+       // Query to check if the user_id exists in the "matches" array
+    const query = { matches: { $elemMatch: { user_id: user_id } } };
+
+      
+      // Find users that have the specified user_id in their matches array
+      const matchingUsers = await users.find(query).toArray();
+    //     console.log('test123', matchingUsers)
+    res.send(matchingUsers)
+    } finally {
+      await client.close();
+    }
+  });
+  
+  
 
 
 app.put('/user', async(req, res) => {
