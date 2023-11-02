@@ -35,6 +35,7 @@ Tinder is a Dating platform with many functionalites i try to build on my own.
 - Create Account ✅
 - Onboarding (create Profile with Name, Gender...) ✅
 - Log In ✅
+- Log Out ✅
 - Swipe functionality ✅
 - Match functionality ✅
 - Chat functionality ✅
@@ -47,4 +48,7 @@ Tinder is a Dating platform with many functionalites i try to build on my own.
 - Upload Pictures
 - #### If you have an idea to add, let me know!
 
+## Known Issues
 
+- Redirect is not working properly when Logging Out
+- Log In is sometimes not working
