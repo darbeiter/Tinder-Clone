@@ -1,5 +1,5 @@
 
-# Tinder-Clone
+# Full-Stack Tinder-Clone
 
 Connect and Date with the help of the flame. 
 Tinder is a Dating platform with many functionalites such as: Swipe, Chat, Match and so on. 
