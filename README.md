@@ -1,8 +1,10 @@
 
-# Project Title
+# Tinder-Clone
 
-This is a Tinder-Clone Project. 
-Tinder is a Dating platform with many functionalites i try to build on my own. 
+Connect and Date with the help of the flame. 
+Tinder is a Dating platform with many functionalites such as: Swipe, Chat, Match and so on. 
+
+I'm building this Project on my own and I'll try to Update this Project once in a while.
 
 
 ## Badges
